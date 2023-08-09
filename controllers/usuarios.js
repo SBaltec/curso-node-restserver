@@ -56,7 +56,7 @@ catch(error){
     // const usuario = await Usuario.findByIdAndDelete( id );
 
     const usuario = await Usuario.findByIdAndUpdate( id, { estado: false } );
-
+    
 
     res.json(usuario);
 
