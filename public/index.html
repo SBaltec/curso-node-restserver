@@ -3,9 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso denegado</title>
+    <title>Google Sign In</title>
 </head>
 <body>
-    <h1>Acceso denegado</h1>
+    <h1>Google Sign In</h1>
+    <hr>
+   
+    
+      <div id="g_id_onload"
+         data-client_id="553531125606-ere9bu9kkgj9pssipkddn8pgs1uakiqn.apps.googleusercontent.com"
+         data-callback="handleCredentialResponse" 
+         data-login_uri="https://your.domain/your_login_endpoint"
+         data-auto_prompt="false">
+      </div>
+      <div class="g_id_signin"
+         data-type="standard"
+         data-size="large"
+         data-theme="outline"
+         data-text="sign_in_with"
+         data-shape="rectangular"
+         data-logo_alignment="left">
+      </div>
+      <button id="google_signout">
+         Sign out
+      </button>
+      <script src="https://accounts.google.com/gsi/client" async defer></script>
+      <script>
+        function handleCredentialResponse(response) {
+           // decodeJwtResponse() is a custom function defined by you
+           // to decode the credential response.
+        
+           //google token ID TOKEN
+           
+        const body = { id_token: response.credential }
+           fetch('http://localhost:8080/api/auth/google', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+            })
+            .then( r=> r.json() )
+            .then( resp =>{
+                console.log(resp )
+                 localStorage.setItem('email', resp.usuario.correo )
+            })
+           .catch((err) => {
+           console.warn;
+            
+           });
+
+           const button = document.getElementById('google_signout');
+           button.onclick= async() =>{
+            console.log(google.accounts.id);
+            google.accounts.id.disableAutoSelect();
+
+            google.accounts.id.revoke(localStorage.getItem('email'), done =>{
+               localStorage.clear();
+               location.reload();
+            })
+            
+           }
+        //   const responsePayload = decodeJwtResponse(response.credential);
+      
+        //    console.log("ID: " + responsePayload.sub);
+        //    console.log('Full Name: ' + responsePayload.name);
+        //    console.log('Given Name: ' + responsePayload.given_name);
+        //    console.log('Family Name: ' + responsePayload.family_name);
+        //    console.log("Image URL: " + responsePayload.picture);
+        //    console.log("Email: " + responsePayload.email);
+
+
+        }
+      </script>
+
 </body>
 </html>
